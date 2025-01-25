@@ -28,7 +28,7 @@ def generate_ai_content():
         
         # Generate content using the Gemini model
         model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(user_input)
+        response = model.generate_content("once upon a time a queen")
         
         # Return the generated content as a JSON response
         return jsonify({"response": response.text})

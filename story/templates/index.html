@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Storytelling</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Storytelling</h1>
+        <div id="chat-box" class="chat-box"></div>
+        
+        <input id="user-input" class="user-input" type="text" placeholder="Start your story...">
+        <button class="btn-send" onclick="sendUserInput()">Send</button>
+    </div>
+    
+    <script>
+    // Function to handle user input and send it to FastAPI
+    async function sendUserInput() {
+        const userInput = document.getElementById("user-input").value;
+    
+        if (userInput.trim()) {
+            // Clear the input field
+            document.getElementById("user-input").value = "";
+
+            // Send the user input to the backend
+            const response = await fetch('/get_story', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_input: userInput })
+            });
+
+            const data = await response.json();
+            if (data.story) {
+                const chatBox = document.getElementById("chat-box");
+                chatBox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+                chatBox.innerHTML += `<p><strong>AI:</strong> ${data.story}</p>`;
+                chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
+            }
+        }
+    }
+    </script>
+</body>
+</html>
