@@ -29,7 +29,7 @@ def generate_story():
     # Generate the story content based on user input
     ai_response, choices = generate_story(user_input)
 
-    print("AI RESPONSE::::::::::::::::::::: ", ai_response)
+    print("AI RESPONSE:: ", ai_response)
 
     # Return the AI-generated story content along with choices as JSON
     return jsonify({

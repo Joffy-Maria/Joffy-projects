@@ -18,30 +18,52 @@
     <script>
     // Function to handle user input and send it to FastAPI
     async function sendUserInput() {
-        const userInput = document.getElementById("user-input").value;
-    
-        if (userInput.trim()) {
-            // Clear the input field
-            document.getElementById("user-input").value = "";
+    const userInput = document.getElementById("user-input").value;
 
-            // Send the user input to the backend
-            const response = await fetch('/get_story', {
+    if (userInput.trim()) {
+        // Clear the input field
+        document.getElementById("user-input").value = '';
+
+        try {
+            // Send the user input to the Flask API for story generation
+            const response = await fetch('/get-ai-story', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_input: userInput })
+                body: JSON.stringify({ user_input: userInput })  // Send user input with 'user_input' key
             });
 
-            const data = await response.json();
-            if (data.story) {
-                const chatBox = document.getElementById("chat-box");
-                chatBox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
-                chatBox.innerHTML += `<p><strong>AI:</strong> ${data.story}</p>`;
-                chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
+            // Check if the response is okay (status code 2xx)
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+
+            // Attempt to parse JSON response
+            const data = await response.json();
+
+            if (data.text) {
+                // Add the AI-generated content to the chat-box
+                const chatBox = document.getElementById("chat-box");
+                chatBox.innerHTML += `<p><strong>AI:</strong> ${data.text}</p>`;
+
+                // Optionally, add choices or other details to your story
+                if (data.choices) {
+                    chatBox.innerHTML += `<p><strong>Choices:</strong> ${data.choices.join(", ")}</p>`;
+                }
+
+                // Ensure the chat-box scrolls to the latest message
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                console.error("Error generating story:", data.error);
+            }
+
+        } catch (error) {
+            console.error("Error fetching AI story:", error);
         }
     }
+}
+
     </script>
 </body>
 </html>
