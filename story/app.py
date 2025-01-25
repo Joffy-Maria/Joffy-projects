@@ -1,6 +1,6 @@
 import google.generativeai as genai
 from flask import Flask, jsonify, render_template, request
-genai.configure(api_key="AIzaSyCujeoVCeNSukRpLgWz2_Jc1n4VaF3elJc")
+genai.configure(api_key="")
 
 
 app = Flask(__name__)
