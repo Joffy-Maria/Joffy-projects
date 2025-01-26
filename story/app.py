@@ -2,25 +2,21 @@ import os
 import google.generativeai as genai
 from flask import Flask, jsonify, render_template, request
 
-
 # Configure the API with your key
 genai.configure(api_key=os.environ.get('GENAI_API_KEY'))
 
-
 app = Flask(__name__)
+
+# Initialize the model
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# # Configure the API with your key
-
-# Initialize the model
-model = genai.GenerativeModel("gemini-1.5-flash")
-
-
+# Route to handle AI story generation
 @app.route('/get-ai-story', methods=['POST'])
-def generate_story():
+def get_ai_story():
     # Get the JSON data from the request body
     data = request.get_json()
     
@@ -33,15 +29,11 @@ def generate_story():
     # Generate the story content based on user input
     ai_response, choices = generate_story(user_input)
 
-    print("AI RESPONSE:: ", ai_response)
-
     # Return the AI-generated story content along with choices as JSON
     return jsonify({
         'text': ai_response,
         'choices': choices
     })
-
-
 
 # Function to generate a story based on user input and choices
 def generate_story(user_input, history=None):
@@ -104,11 +96,6 @@ def interactive_story():
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
-
-# if __name__ == "__main__":
-#     interactive_story()
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
