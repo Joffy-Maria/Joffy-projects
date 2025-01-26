@@ -1,0 +1,6 @@
+flask
+gunicorn
+google-ai-generativelanguage
+google-api-core
+grpcio-status
+mysql-connector-python
